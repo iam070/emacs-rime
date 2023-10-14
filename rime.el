@@ -342,6 +342,18 @@ If one of these functions return t, the input-method will fallback to ascii mode
   :type 'list
   :group 'rime)
 
+(defcustom rime-min-log-level 3
+  "The min log level of librime.
+
+  This value is passed to the Glog library using FLAGS_minloglevel variable, which librime
+  use for logging. The numbers of severity levels INFO, WARNING, ERROR and FATAL are 0, 1,
+  2 and 3 respectively. If no set, the output of librime log will be displayed to the emacs
+  screen in -nw mode. The value should be one of 0, 1, 2, 3."
+
+  :type 'integer
+  :options '(0 1 2 3)
+  :group 'rime)
+
 (defcustom rime-show-candidate 'minibuffer
   "How we display the candidate menu.
 
@@ -1006,7 +1018,8 @@ You can customize the color with `rime-indicator-face' and `rime-indicator-dim-f
     (if (rime--maybe-prompt-for-deploy)
         (progn
           (rime-lib-start (expand-file-name rime-share-data-dir)
-                          (expand-file-name rime-user-data-dir))
+                          (expand-file-name rime-user-data-dir)
+                          (number-to-string rime-min-log-level))
           (setq rime--lib-loaded t))
       (error "Activate Rime failed"))))
 
@@ -1140,7 +1153,8 @@ first time deploy could take some time. Continue?" user-data-dir)))))
         (error "You should enable rime before deploy")
       (rime-lib-finalize)
       (rime-lib-start (expand-file-name rime-share-data-dir)
-                      (expand-file-name rime-user-data-dir)))))
+                      (expand-file-name rime-user-data-dir)
+                      (number-to-string rime-min-log-level)))))
 
 (defun rime-sync ()
   "Sync Rime user data."

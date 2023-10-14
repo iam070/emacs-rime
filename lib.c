@@ -115,6 +115,8 @@ start(emacs_env *env, ptrdiff_t nargs, emacs_value args[], void *data) {
 
   char *shared_data_dir = get_string(env,  args[0]);
   char *user_data_dir = get_string(env, args[1]);
+  char *min_log_level = get_string(env, args[2]);
+  //char *min_log_level = "3";
 
   RIME_STRUCT(RimeTraits, emacs_rime_traits);
 
@@ -124,6 +126,11 @@ start(emacs_env *env, ptrdiff_t nargs, emacs_value args[], void *data) {
   emacs_rime_traits.distribution_name = "Rime";
   emacs_rime_traits.distribution_code_name = "emacs-rime";
   emacs_rime_traits.distribution_version = "1.0.1";
+  if (min_log_level) {
+	  emacs_rime_traits.min_log_level = atoi(min_log_level);
+  } else {
+	  emacs_rime_traits.min_log_level = 3;
+  }
   if (rime->first_run) {
     rime->api->setup(&emacs_rime_traits);
     rime->first_run = false;
@@ -470,7 +477,7 @@ emacs_module_init (struct emacs_runtime *ert)
 
   emacs_defun(env, rime, version, "rime-lib-version", "Version", 0, 0);
   emacs_defun(env, rime, set_cursor_pos, "rime-lib-set-cursor-pos", "Set Cursor Pos", 1, 1);
-  emacs_defun(env, rime, start, "rime-lib-start", "Start", 2, 2);
+  emacs_defun(env, rime, start, "rime-lib-start", "Start", 3, 3);
   emacs_defun(env, rime, finalize, "rime-lib-finalize", "Finalize", 0, 0);
   emacs_defun(env, rime, sync_user_data, "rime-lib-sync-user-data", "Sync user data.", 0, 0);
   emacs_defun(env, rime, get_sync_dir, "rime-lib-get-sync-dir", "Get sync directory.", 0, 0);
